@@ -1,0 +1,30 @@
+{
+    "name": "daydiff/yii2-unique-command",
+    "description": "Yii2 command trait and behavior allows you to control uniqueness of command",
+    "type": "yii2-extension",
+    "keywords": [
+        "daydiff",
+        "yii2",
+        "behavior",
+        "command",
+        "unique",
+        "uniqueness"
+    ],
+    "homepage": "https://github.com/daydiff/yii2-unique-command",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandr Tabakov",
+            "email": "alex.daymon@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : ">=5.4.0",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Daydiff\\UniqueCommand\\": "src"
+        }
+    }
+}

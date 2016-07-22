@@ -1,0 +1,1 @@
+# Yii2 command behavior allows you to control uniqueness of command
