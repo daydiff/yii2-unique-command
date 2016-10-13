@@ -29,7 +29,7 @@ trait Uniqueness
 
     private function canBeStarted($actionId)
     {
-        if (file_exists($this->getPidFile($actionId)) && $this->isAlreadyRunning()) {
+        if (file_exists($this->getPidFile($actionId)) && $this->isAlreadyRunning($actionId)) {
             return false;
         }
 
