@@ -5,7 +5,7 @@ namespace Daydiff\UniqueCommand;
 trait Uniqueness
 {
     /**
-     * start - Start the uniqueness command with the given actionID.
+     * Start the uniqueness command with the given actionID.
      * End the process if the on Windows environment.
      * 
      * @param  $pid The content to write to PID file
@@ -28,7 +28,7 @@ trait Uniqueness
     }
 
     /**
-     * stop - Stop the uniqueness command referring to given actionID.
+     * Stop the uniqueness command referring to given actionID.
      * 
      * @param  $actionId The actionID whose command is to be stopped
      */
@@ -41,7 +41,7 @@ trait Uniqueness
     }
 
     /**
-     * canBeStarted - Check whether the uniqueness command can or cannot be started.
+     * Check whether the uniqueness command can or cannot be started.
      * 
      * @param   $actionId The ID of the uniqueness action
      * @return  boolean
@@ -56,7 +56,7 @@ trait Uniqueness
     }
 
     /**
-     * writePid - Update the file with the given actionID
+     * Update the file with the given actionID
      * with the given PID.
      * Send an error and end the process if there are any errors.
      * 
@@ -73,7 +73,7 @@ trait Uniqueness
     }
 
    /**
-    * getPidFile - Get the PID file that refers to the given action ID.
+    * Get the PID file that refers to the given action ID.
     * 
     * @param  $actionId The ID for which it is required to get the PID file
     * @return The PID file.
@@ -85,8 +85,7 @@ trait Uniqueness
     }
 
     /**
-     * isAlreadyRunning - Check if the uniqueness commena with
-     * the given actionID is already running.
+     * Check if the uniqueness command with the given actionID is already running.
      * 
      * @param  type  $actionId The ID of the uniqueness action.
      * @return boolean 
