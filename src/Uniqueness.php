@@ -5,50 +5,53 @@ namespace Daydiff\UniqueCommand;
 trait Uniqueness
 {
     /**
-     * Start the uniqueness command with the given actionID.
-     * End the process if the on Windows environment.
-     * 
-     * @param  $pid The content to write to PID file
-     * @param  $actionId The ID uniqueness command to be started.
+     * Starts a command for a given pid and action.
+     *
+     * Can't control uniqueness on Windows systems: just logs INFO message and return to main flow.
+     * Ends application with zero code if a command is already running. It's recommended to use unique
+     * command identifier. For example: if you want every action of Yii console command to be unique
+     * you should use different ids for them. You can make them like this: [command_name]_[action_name].
+     *
+     * @param string $commandId A command ID.
      * @return null
      */
-    public function start($pid, $actionId)
+    public function start($commandId)
     {
+        $pid = getmypid();
+
         if ('\\' == DIRECTORY_SEPARATOR) {
             \Yii::info('Can\'t control uniqueness on Windows system');
             return;
         }
 
-        if (!$this->canBeStarted($actionId)) {
+        if (!$this->canBeStarted($commandId)) {
             \Yii::info('Already running');
             \Yii::$app->end(0);
         }
 
-        $this->writePid($pid, $actionId);
+        $this->writePid($pid, $commandId);
     }
 
     /**
-     * Stop the uniqueness command referring to given actionID.
-     * 
-     * @param  $actionId The actionID whose command is to be stopped
+     * Stops a command for a given actionID.
+     *
+     * @param string $commandId An action ID.
      */
-    public function stop($actionId)
+    public function stop($commandId)
     {
-        $pidFile = $this->getPidFile($actionId);
+        $pidFile = $this->getPidFile($commandId);
         if (file_exists($pidFile)) {
             unlink($pidFile);
         }
     }
 
     /**
-     * Check whether the uniqueness command can or cannot be started.
-     * 
-     * @param   $actionId The ID of the uniqueness action
-     * @return  boolean
+     * @param string $commandId
+     * @return boolean
      */
-    private function canBeStarted($actionId)
+    private function canBeStarted($commandId)
     {
-        if (file_exists($this->getPidFile($actionId)) && $this->isAlreadyRunning($actionId)) {
+        if (file_exists($this->getPidFile($commandId)) && $this->isAlreadyRunning($commandId)) {
             return false;
         }
 
@@ -56,43 +59,35 @@ trait Uniqueness
     }
 
     /**
-     * Update the file with the given actionID
-     * with the given PID.
-     * Send an error and end the process if there are any errors.
-     * 
-     * @param  $pid The content to write into the PID file.
-     * @param  $actionId The ID of the PID file to write to.
+     * @param integer $pid
+     * @param string $commandId
      */
-    private function writePid($pid, $actionId)
+    private function writePid($pid, $commandId)
     {
-        $pidFile = $this->getPidFile($actionId);
+        $pidFile = $this->getPidFile($commandId);
         if (false === file_put_contents($pidFile, $pid)) {
             \Yii::error('Failed to write pid to ' . $pidFile);
             \Yii::$app->end(1);
         }
     }
 
-   /**
-    * Get the PID file that refers to the given action ID.
-    * 
-    * @param  $actionId The ID for which it is required to get the PID file
-    * @return The PID file.
-    */
-   private function getPidFile($actionId)
+    /**
+     * @param string $commandId
+     * @return string
+     */
+    private function getPidFile($commandId)
     {
-        $pid = "@app/runtime/{$this->id}_{$actionId}.pid";
+        $pid = "@app/runtime/{$commandId}.pid";
         return \Yii::getAlias($pid);
     }
 
     /**
-     * Check if the uniqueness command with the given actionID is already running.
-     * 
-     * @param  type  $actionId The ID of the uniqueness action.
-     * @return boolean 
+     * @param string $commandId
+     * @return boolean
      */
-    private function isAlreadyRunning($actionId)
+    private function isAlreadyRunning($commandId)
     {
-        $pidFile = $this->getPidFile($actionId);
+        $pidFile = $this->getPidFile($commandId);
 
         if (false === ($pid = file_get_contents($pidFile))) {
             \Yii::error('Can\'t read pid from ' . $pidFile);
@@ -102,7 +97,7 @@ trait Uniqueness
         $command = sprintf('ps -p%s -o pid=', escapeshellarg($pid));
         $is = exec($command);
 
-        return (bool) $is;
+        return (bool)$is;
     }
 
 }

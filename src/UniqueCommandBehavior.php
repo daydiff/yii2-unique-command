@@ -31,15 +31,16 @@ class UniqueCommandBehavior extends \yii\base\Behavior
 
     /**
      * @param \yii\base\ActionEvent $event
+     * @return boolean
      */
     public function beforeAction($event)
     {
         if (in_array($event->action->id, $this->actions)) {
-            $this->start(getmypid(), $event->action->id);
-            echo "Yeah!\n";
-        } else {
-            echo "No :(\n";
+            $this->start($this->getCommandId($event));
+            return true;
         }
+
+        return true;
     }
 
     /**
@@ -48,7 +49,7 @@ class UniqueCommandBehavior extends \yii\base\Behavior
     public function afterAction($event)
     {
         if (in_array($event->action->id, $this->actions)) {
-            $this->stop($event->action->id);
+            $this->stop($this->getCommandId($event));
         }
     }
 
@@ -58,8 +59,12 @@ class UniqueCommandBehavior extends \yii\base\Behavior
 
     }
 
-    public function getId()
+    /**
+     * @param \yii\base\ActionEvent $event
+     * @return string
+     */
+    public function getCommandId($event)
     {
-        return $this->owner->id;
+        return $this->owner->id . ':' . $event->action->id;
     }
 }
